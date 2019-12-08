@@ -6,25 +6,27 @@ from bs4 import BeautifulSoup
 
 def cargarurl(url):
 
-    # URL = "https://cenacad.espol.edu.ec/index.php/module/Report/action/DetallePar/id_p/"
+    #URL = "https://cenacad.espol.edu.ec/index.php/module/Report/action/DetallePar/id_p/"
     r = requests.get(url)
     soup = BeautifulSoup(r.content, 'html5lib')
     return soup
 
 def procesararchivo(ruta):
 
-    f = open("subjects.txt", "r")
+    f = open("subjects.txt", "r", encoding="utf8")
     diccionariomaterias = {}
 
     for linea in f:
         linea =linea.strip().split(",")
-        listacod = []
-        codeidp = linea[7]
-        codeide = linea[8]
-        listacod.append(codeidp)
-        listacod.append(codeide)
-        codmateria = linea[3]
-        diccionariomaterias[codmateria] = listacod
+        anioTermino = linea[1]
+        if anioTermino=="2018" or anioTermino=="2019":
+            listacod = []
+            codeidp = linea[7]
+            codeide = linea[8]
+            listacod.append(codeidp)
+            listacod.append(codeide)
+            codmateria = linea[3]
+            diccionariomaterias[codmateria] = listacod
 
 
     return diccionariomaterias
@@ -40,7 +42,7 @@ def sopacalificacionporcodmateria(codigo,diccionario):
 def mostrarprofesorporcod(codigo):
     dic = procesararchivo("subjects.txt")
     sopa = sopacalificacionporcodmateria(codigo,dic)
-    # print(sopa)
+    print(sopa)
     tabla = sopa.find('table' ,attrs={'class':'tbl centrado'}) #Buscar nombre de profesor en el html
     encabezado = tabla.find('td')
     text = encabezado.renderContents()
@@ -50,6 +52,7 @@ def mostrarprofesorporcod(codigo):
 
 def mostrarpreguntas(codigo):
     dic = procesararchivo("subjects.txt")
+    print(dic)
     sopa = sopacalificacionporcodmateria(codigo,dic)
     data =  sopa.findAll('table')[3].findAll('tr') #Encuentra la tabla donde estan las preguntas con las respuestas
     l = []
@@ -67,12 +70,12 @@ def mostrarpreguntas(codigo):
 # FICT03053
 # FMAR04564
 # EDCOM00281
-mostrarpreguntas('ESTG1028')
-mostrarpreguntas('FIEC002113')
-mostrarpreguntas('EDCOM00281')
-mostrarpreguntas('FMAR04564')
-mostrarpreguntas('FICT03509')
-
+#mostrarpreguntas('ESTG1028')
+mostrarpreguntas('INDG1022')
+#mostrarpreguntas('EDCOM00281')
+#mostrarpreguntas('FMAR04564')
+#mostrarpreguntas('FICT03509')
+#mostrarprofesorporcod('FICT03509')
 
 
 
