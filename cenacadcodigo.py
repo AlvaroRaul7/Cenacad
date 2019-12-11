@@ -43,17 +43,19 @@ def cargarGeneral():
     codigo = dic.keys()
     for i in codigo:
         listacod = mostrarpreguntas(i,dic)
-        pd.DataFrame.to_csv(listacod,path_or_buf=file)
+        profesor= str(mostrarprofesorporcod(i,dic))
+        file.write(profesor+"\n")
+        pd.DataFrame.to_csv(listacod,path_or_buf=file,index=False,header=False,sep=";")
 
-def mostrarprofesorporcod(codigo):
-    dic = procesararchivo("subjects.txt")
+def mostrarprofesorporcod(codigo,dic):
+    #dic = procesararchivo("subjects.txt")
     sopa = sopacalificacionporcodmateria(codigo,dic)
-    print(sopa)
     tabla = sopa.find('table' ,attrs={'class':'tbl centrado'}) #Buscar nombre de profesor en el html
     encabezado = tabla.find('td')
     text = encabezado.renderContents()
     texto_encabezado = text.strip()
-    print(texto_encabezado) #Falta depurar la cabecera para mostrar el nombre completo del profesor
+
+    return(texto_encabezado) #Falta depurar la cabecera para mostrar el nombre completo del profesor
 
 
 def mostrarpreguntas(codigo, dic):
@@ -66,9 +68,28 @@ def mostrarpreguntas(codigo, dic):
         l.append(fila)
     df = pd.DataFrame(l, columns=["No de Pregunta","Contenido", " Media","Desviacion Estandar","Puntaje Obtenido"])
     df = df.drop(df.index[[0,1]])
-    col_depurada= df['No de Pregunta'].str.replace('\\n',' ', regex=True) # Eliminar saltos de linea de la columna de no de pregunta
+    col_depurada= df['No de Pregunta'].str.replace('\\n','', regex=True) # Eliminar saltos de linea de la columna de no de pregunta
     df['No de Pregunta'] = col_depurada
     return df
+
+def separarPreguntas(nombre):
+    file = open(nombre,"r")
+    diccionario = {}
+    for linea in file:
+        linea = linea.strip().split(';')
+        if len(linea)>2:
+            lista = []
+            media = linea[2]
+            desviacion = linea[3]
+            lista.append(media)
+            lista.append(desviacion)
+            pregunta = linea[1]
+            if pregunta in diccionario.keys():
+                diccionario[pregunta].append(lista)
+            else:
+                diccionario[pregunta] = lista
+    return diccionario
+
 
 # FICT03509
 # FICT03053
@@ -80,6 +101,8 @@ def mostrarpreguntas(codigo, dic):
 #mostrarpreguntas('FMAR04564')
 #mostrarpreguntas('FICT03509')
 #mostrarprofesorporcod('FICT03509')
-lista=cargarGeneral()
+#preguntas = cargarGeneral()
+lista=separarPreguntas("preguntas.csv")
+print(lista)
 
 
