@@ -37,7 +37,13 @@ def sopacalificacionporcodmateria(codigo,diccionario):
     sopa = cargarurl("https://cenacad.espol.edu.ec/index.php/module/Report/action/DetallePar/id_p/"+listacod[0]+"/id_e/"+listacod[1])
     return sopa
 
-
+def cargarGeneral():
+    file = open("preguntas.csv","w")
+    dic = procesararchivo("subjects.txt")
+    codigo = dic.keys()
+    for i in codigo:
+        listacod = mostrarpreguntas(i,dic)
+        pd.DataFrame.to_csv(listacod,path_or_buf=file)
 
 def mostrarprofesorporcod(codigo):
     dic = procesararchivo("subjects.txt")
@@ -50,9 +56,7 @@ def mostrarprofesorporcod(codigo):
     print(texto_encabezado) #Falta depurar la cabecera para mostrar el nombre completo del profesor
 
 
-def mostrarpreguntas(codigo):
-    dic = procesararchivo("subjects.txt")
-    print(dic)
+def mostrarpreguntas(codigo, dic):
     sopa = sopacalificacionporcodmateria(codigo,dic)
     data =  sopa.findAll('table')[3].findAll('tr') #Encuentra la tabla donde estan las preguntas con las respuestas
     l = []
@@ -64,19 +68,18 @@ def mostrarpreguntas(codigo):
     df = df.drop(df.index[[0,1]])
     col_depurada= df['No de Pregunta'].str.replace('\\n',' ', regex=True) # Eliminar saltos de linea de la columna de no de pregunta
     df['No de Pregunta'] = col_depurada
-    print(df)
+    return df
 
 # FICT03509
 # FICT03053
 # FMAR04564
 # EDCOM00281
 #mostrarpreguntas('ESTG1028')
-mostrarpreguntas('INDG1022')
+#mostrarpreguntas('INDG1022')
 #mostrarpreguntas('EDCOM00281')
 #mostrarpreguntas('FMAR04564')
 #mostrarpreguntas('FICT03509')
 #mostrarprofesorporcod('FICT03509')
-
-
+lista=cargarGeneral()
 
 
