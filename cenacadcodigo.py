@@ -15,7 +15,7 @@ def procesararchivo(ruta):
 
     f = open("subjects.txt", "r", encoding="utf8")
     diccionariomaterias = {}
-
+    g = open("materias_Paralelos.csv","w",encoding='utf8')
     for linea in f:
         linea =linea.strip().split(",")
         anioTermino = linea[1]
@@ -27,8 +27,8 @@ def procesararchivo(ruta):
             listacod.append(codeide)
             codmateria = linea[3]
             diccionariomaterias[codmateria] = listacod
-
-
+            g.write(linea[3]+","+linea[4]+","+linea[5]+"\n")
+    g.close()
     return diccionariomaterias
 
 
@@ -54,8 +54,10 @@ def mostrarprofesorporcod(codigo,dic):
     encabezado = tabla.find('td')
     text = encabezado.renderContents()
     texto_encabezado = text.strip()
-
-    return(texto_encabezado) #Falta depurar la cabecera para mostrar el nombre completo del profesor
+    texto_encabezado = str(texto_encabezado).split('\\n')
+    componentes = texto_encabezado[3].rstrip(' <br/>\'')
+    componentes = componentes.lstrip('        Profesor: ')
+    return(componentes) #Depurado el nombre del profesor
 
 
 def mostrarpreguntas(codigo, dic):
@@ -101,8 +103,8 @@ def separarPreguntas(nombre):
 #mostrarpreguntas('FMAR04564')
 #mostrarpreguntas('FICT03509')
 #mostrarprofesorporcod('FICT03509')
-#preguntas = cargarGeneral()
-lista=separarPreguntas("preguntas.csv")
-print(lista)
+preguntas = cargarGeneral()
+#lista=separarPreguntas("preguntas.csv")
+#print(lista)
 
 
