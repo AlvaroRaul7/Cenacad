@@ -27,7 +27,7 @@ def procesararchivo(ruta):
             listacod.append(codeide)
             codmateria = linea[3]
             diccionariomaterias[codmateria] = listacod
-            g.write(linea[3]+","+linea[4]+","+linea[5]+"\n")
+            g.write(linea[1]+";"+linea[2]+";"+linea[3]+";"+linea[4]+";"+linea[5]+"\n")
     g.close()
     return diccionariomaterias
 
@@ -74,6 +74,31 @@ def mostrarpreguntas(codigo, dic):
     df['No de Pregunta'] = col_depurada
     return df
 
+def crearArchivoCompleto(materias,valores):
+    file1 = open(materias,'r',encoding='utf8')
+    file2 = open(valores,'r')
+    file3 = open("completo.csv",'w',encoding='utf8')
+    profesor = "a"
+    materia = "a"
+    vacio = 0
+    for i in file2:
+        linea = i.strip().split(';')
+        if vacio%9>0 and len(linea)>1:
+            pregunta = linea[1]
+            media = linea[2]
+            desviacion = linea[3]
+            print("hola")
+            file3.write(materia + ";" + profesor + ";" + pregunta + ";" + media + ";" + desviacion + "\n")
+            vacio += 1
+        elif vacio%9==0 and len(linea)==1:
+            profesor = linea[0]
+            print(profesor)
+            materia = file1.readline().strip()
+            vacio+=1
+    file3.close()
+    file2.close()
+    file1.close()
+
 def separarPreguntas(nombre):
     file = open(nombre,"r")
     diccionario = {}
@@ -104,7 +129,7 @@ def separarPreguntas(nombre):
 #mostrarpreguntas('FICT03509')
 #mostrarprofesorporcod('FICT03509')
 preguntas = cargarGeneral()
-#lista=separarPreguntas("preguntas.csv")
+lista=separarPreguntas("preguntas.csv")
 #print(lista)
-
+crearArchivoCompleto("materias_Paralelos.csv","preguntas.csv")
 
