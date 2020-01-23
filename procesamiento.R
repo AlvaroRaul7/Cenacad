@@ -1,13 +1,16 @@
+library(float)
 completo <- read.csv2("C:/Users/Luis Toro/Documents/GitHub/Cenacad/completo.csv",header = F)
 names(completo) = c("anio","semestre","codigo_materia","materia","paralelo","profesor","pregunta","media","desviacion")
-general <- cbind.data.frame(completo$pregunta,completo$media,completo$desviacion)
+general <- cbind.data.frame(completo$pregunta,(completo$media),(completo$desviacion))
 names(general)=c("Pregunta","Media","Desviacion")
-preguntas<- preguntas[duplicated(preguntas),]
-? hist
-pregunta1 = c(general$Pregunta=preguntas[1])
+pregunta1 <- (general$Pregunta["Explica con claridad las polÃ???ticas y los objetivos de aprendizaje, cumpliendo con los contenidos de la materia."])
 summary(general)
 str(general)
-cor(numeric(general$Media),numeric(general$Media))
-plot(general$Pregunta,general$Media)aaa
-summary(general$Media)
+is.atomic(general$Media)
+cor(general$Media,general$Desviacion)
+plot(general$Pregunta,general$Media)
+plot(general$Pregunta,general$Desviacion)
+cor.test(general)
 hist(general$Media)
+hist(general$Desviacion)
+pregunta1
